@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Simulate bus bunching and compare a simple headway-holding strategy.">
+  <title>HeadwayLab — transit service simulator</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#"><span class="brand-mark">H</span><span>HeadwayLab</span></a>
+      <div class="top-meta"><span class="status-dot"></span> SERVICE RELIABILITY LAB <span class="divider">/</span> SIMULATION MODE</div>
+      <span class="user-chip"><span class="avatar">TS</span> Tabish Syed</span>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div><p class="eyebrow">TRANSIT OPERATIONS / ROUTE 12</p><h1>Small delays can travel far.</h1><p class="hero-copy">See how buses bunch together, then test a simple control strategy against the same traffic scenario.</p></div>
+        <div class="route-badge"><span class="route-mark">12</span><span><b>North Loop</b><small>12 stops · 8 buses · 120 min</small></span></div>
+      </section>
+
+      <section class="control-strip card">
+        <div class="control-title"><p class="eyebrow">01 / SCENARIO INPUTS</p><h2>Shape the service conditions</h2></div>
+        <label class="range-control"><span><b>Road delay</b><small>Extra travel time variability</small></span><span class="range-value"><b id="trafficValue">2.0</b><small>min</small></span><input id="traffic" type="range" min="0" max="5" step="0.5" value="2"></label>
+        <label class="range-control"><span><b>Passenger demand</b><small>Boarding pressure at each stop</small></span><span class="range-value"><b id="demandValue">1.0×</b></span><input id="demand" type="range" min="0.5" max="2" step="0.1" value="1"></label>
+        <label class="range-control"><span><b>Target headway</b><small>Scheduled time between buses</small></span><select id="targetHeadway" class="select-control"><option value="8">8 minutes</option><option value="10" selected>10 minutes</option><option value="12">12 minutes</option></select></label>
+        <label class="range-control"><span><b>Max holding time</b><small>Control strategy limit per stop</small></span><span class="range-value"><b id="holdValue">4</b><small>min</small></span><input id="holdLimit" type="range" min="0" max="8" step="1" value="4"></label>
+        <button class="primary-button" id="runSimulation" type="button"><span>↻</span> Run simulation</button>
+      </section>
+
+      <section class="metrics" aria-label="Simulation comparison">
+        <article class="metric-card"><div class="metric-label">AVG PASSENGER WAIT <span>◷</span></div><strong id="waitMetric">—</strong><small id="waitChange">Controlled vs. regular service</small></article>
+        <article class="metric-card"><div class="metric-label">BUNCHING EVENTS <span>↔</span></div><strong id="bunchMetric">—</strong><small id="bunchChange">Headways under 60% of target</small></article>
+        <article class="metric-card"><div class="metric-label">ON-TARGET HEADWAYS <span>◎</span></div><strong id="reliabilityMetric">—</strong><small id="reliabilityChange">Within 75–125% of target</small></article>
+        <article class="metric-card"><div class="metric-label">BUSES SIMULATED <span>▤</span></div><strong>8</strong><small>Across 12 route stops</small></article>
+      </section>
+
+      <div class="dashboard">
+        <section class="card chart-card">
+          <div class="section-head"><div><p class="eyebrow">02 / SERVICE SPACING</p><h2>Mean headway by stop</h2><p class="section-copy">Average minutes between departing buses at each stop.</p></div><div class="chart-legend"><span><i class="regular-dot"></i> Regular service</span><span><i class="hold-dot"></i> Headway holding</span></div></div>
+          <div class="chart-wrap"><div id="headwayChart" role="img" aria-label="Line chart comparing mean bus headway at each stop"></div></div>
+          <div class="stop-strip" id="stopStrip" aria-label="Route stops"></div>
+        </section>
+
+        <section class="card result-card">
+          <div class="section-head"><div><p class="eyebrow">03 / STRATEGY COMPARISON</p><h2>What changed?</h2></div><span class="compare-tag">SAME SCENARIO</span></div>
+          <div id="comparison"></div>
+          <div class="formula-note"><span>i</span><p><b>Wait estimate:</b> passengers are assumed to arrive uniformly between bus departures. The average wait for a gap is half its length.</p></div>
+        </section>
+
+        <section class="card table-card">
+          <div class="section-head"><div><p class="eyebrow">04 / STOP-BY-STOP</p><h2>Headway snapshot</h2><p class="section-copy">Compare the average spacing at each stop after the simulation.</p></div><span class="minutes-tag">MINUTES</span></div>
+          <div class="table-scroll"><table class="stop-table"><thead><tr><th>STOP</th><th>REGULAR</th><th>HOLDING</th><th>CHANGE</th><th>SPACING</th></tr></thead><tbody id="stopTable"></tbody></table></div>
+        </section>
+      </div>
+
+      <footer class="footer"><span>HEADWAYLAB <b>·</b> CREATED BY TABISH SYED</span><span>Synthetic route and passenger data · No live transit feed</span></footer>
+    </main>
+  </div>
+</body>
+</html>
